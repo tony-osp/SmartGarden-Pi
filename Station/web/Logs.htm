@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Logs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.css" type="text/css">
+    <link rel="stylesheet" href="custom.css" />
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js" type="text/javascript"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
+  </head>
+
+  <body>
+    <!-- Home -->
+    <div data-role="page" id="logs">
+      <script type="text/javascript">
+
+        $('#logs').on('pageinit', function () {
+          $("input:radio[name='log_type']").change(function() { onLogTypeChange();});
+          $("input:radio[name='graph_type']").change(function () { onGraphTypeChange(); });
+        });
+        var zonestorage;
+        $('#logs').on('pagebeforeshow', function () {
+          $.getJSON("json/zones", function (data) {
+            zonestorage = data.zones;
+            var now = new Date();
+            $('#edate').val(now.toISOString().slice(0,10));
+            now.setDate(now.getDate() - 14);
+            $('#sdate').val(now.toISOString().slice(0,10));
+            onLogTypeChange();
+          });
+        });
+
+        function onLogTypeChange() {
+            if (($("input:radio[name='log_type']:checked").val() == 'table') || ($("input:radio[name='log_type']:checked").val() == 'schedule')) {
+            $('#graphpane').css('display', 'none');
+            $('#tablepane').css('display', 'block');
+            //$('#tablepane').css('display', 'inherit');
+        } else {
+            $('#graphpane').css('display', 'block');
+            $('#tablepane').css('display', 'none');
+          }
+          doRefresh();
+        }
+
+        function onGraphTypeChange() {
+            doRefresh();
+        }
+
+// Graphing functions
+        var logsChart = null;
+
+        function seriesChange() {
+            var grouping = $("input:radio[name='graph_type']:checked").val();
+
+            if ((grouping == 't') || (grouping == 'wu')) {    // graph historical watering or run time
+                var pData = [];
+
+                for (l_sch = 0; l_sch < plotdata.length; l_sch++) { // iterate over scheduled runs
+
+                    var sch_time = 0;
+                    var sch_wused = 0;
+                    for (l_z = 0; l_z < plotdata[l_sch].entries.length; l_z++) { // iterate over zones in the schedule run
+
+                        sch_time += plotdata[l_sch].entries[l_z].duration;
+                        sch_wused += plotdata[l_sch].entries[l_z].water_used;
+                    }
+                    if (grouping == 't') 
+                        pData.push([plotdata[l_sch].entries[0].date * 1000, sch_time]);
+                    else
+                        pData.push([plotdata[l_sch].entries[0].date * 1000, sch_wused]);
+                }
+                if (grouping == 't') {
+                    logsChartWTOptions.series[0].name = "Run time";
+                    logsChartWTOptions.yAxis.title.text = "Watering time, min.";
+                    logsChartWTOptions.tooltip.valueSuffix = " Min.";
+                }
+                else {
+                    logsChartWTOptions.series[0].name = "Water usage";
+                    logsChartWTOptions.yAxis.title.text = "Water usage, Gal.";
+                    logsChartWTOptions.tooltip.valueSuffix = " Gal.";
+                }
+
+                if (logsChart != null) 
+                    logsChart.destroy();
+                logsChartWTOptions.series[0].data = pData; // copy data
+                logsChart = new Highcharts.Chart(logsChartWTOptions);
+            }
+            else if (grouping == 'zu') {    // draw relative percentage of water use by zone
+                var pData = [];
+                var total_wused = 0;
+
+                for (i = 0; i < zonestorage.length; i++) {
+                    pData.push([zonestorage[i].name, 0]);
+                }
+
+                for (l_sch = 0; l_sch < plotdata.length; l_sch++) { // iterate over scheduled runs
+
+                    for (l_z = 0; l_z < plotdata[l_sch].entries.length; l_z++) { // iterate over zones in the schedule run
+                        pData[plotdata[l_sch].entries[l_z].zone][1] += plotdata[l_sch].entries[l_z].water_used;
+                        total_wused += plotdata[l_sch].entries[l_z].water_used;
+                    }
+                }
+
+                logsChartZUOptions.series[0].name = "Water usage";
+
+                if (logsChart != null)
+                    logsChart.destroy();
+                logsChartZUOptions.series[0].data = pData; // copy data
+                logsChart = new Highcharts.Chart(logsChartZUOptions);
+            }
+        }
+
+        logsChartWTOptions = {
+
+            chart: {
+                type: 'column',
+                renderTo: 'logsChartPlaceholder'
+            },
+            title: { text: null },
+            exporting: { enabled: false },
+            credits: { enabled: false },
+            legend: { enabled: false },
+            tooltip: { valueSuffix: '' },
+
+            xAxis: {
+                type: 'datetime',
+                title: {
+                    text: 'Date/Time'
+                },
+                dateTimeLabelFormats: {
+                    minute: '%H:%M %e %b',
+                    hour: '%H:%M %e %b',
+                    month: '%e %b',
+                    year: '%y'
+                },
+                labels: {
+                    rotation: -45,
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            series: [{}],
+        };
+
+        logsChartZUOptions = {
+
+            chart: {
+                type: 'column',
+                renderTo: 'logsChartPlaceholder'
+            },
+            title: { text: null },
+            exporting: { enabled: false },
+            credits: { enabled: false },
+            legend: { enabled: false },
+            tooltip: { valueSuffix: ' Gal.' },
+
+            xAxis: {
+                type: 'category',
+                title: {
+                    text: 'Date/Time'
+                },
+                labels: {
+                    rotation: -45,
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Water usage by Zone, gal.'
+                }
+            },
+            series: [{}],
+        };
+
+
+
+
+
+
+        function dateChange(e) {
+          if ($('#sdate').val() > $('#edate').val()) {
+            if (e.id == 'sdate') {
+              $('#edate').val($('#sdate').val());
+            } else {
+              $('#sdate').val($('#edate').val());
+            }
+          }
+        }
+
+        function pad(n, width, z) {
+          z = z || '0';
+          n = n + '';
+          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        }
+        function format_adjustments(val) {
+          if (val == -1)
+            return "<td>--</td>";
+          else if (val == 100)
+            return "<td>100</td>";
+          else if (val < 100)
+            return "<td bgcolor='#FFD0D0'>" + val + "</td>";
+          else
+            return "<td bgcolor='#D0FFF0'>" + val + "</td>";
+        }
+        
+        function tableSchedChange(data) {
+            var list = $('#tablepane');
+            list.empty();
+            if (data.logs.length == 0)
+                list.html("<p align='center'>No entries in the selected date range</p>");
+            else {
+                var tbl_html = "<div><br /><table  class='tablepane' cellpadding='3' style='margin: 0 auto'><thead><tr><th data-priority='1'>Date/Time</th><th data-priority='2'>&nbsp Runtime, min &nbsp</th><th data-priority='3'>&nbsp Water, gal &nbsp</th><th data-priority='3'>&nbsp Schedule &nbsp</th>" +
+                                "<th data-priority='4'>&nbsp SAdj &nbsp</th><th data-priority='5'>&nbsp WUnd &nbsp</th></tr></thead><tbody>";
+                for (var i = 0; i < data.logs.length; i++) {
+                        var entry = data.logs[i];
+                        var dt = new Date(entry.date * 1000);
+                        var datetimestr = pad(dt.getUTCFullYear(), 4) + '/' + pad(dt.getUTCMonth() + 1, 2) + '/' + pad(dt.getUTCDate(), 2) + ', ' + pad(dt.getUTCHours(), 2) + ':' + pad(dt.getUTCMinutes(), 2);
+
+                        tbl_html += "<tr><td>" + datetimestr + "</td>";
+                        tbl_html += "<td>" + Math.floor(entry.duration / 60) + ":" + pad(entry.duration % 60, 2) + "</td>";
+                        tbl_html += "<td>" + entry.water_used + "</td>";
+                        tbl_html += "<td>" + entry.scheduleName + "</td>";
+                        tbl_html += format_adjustments(entry.seasonal);
+                        tbl_html += format_adjustments(entry.wunderground) + "</tr>";
+                }
+                tbl_html += "</tbody></table></div>";
+                list.html(tbl_html).trigger("create");
+            }
+        }
+
+        function tableChange(data) {
+
+          var list = $('#tablepane');
+          list.empty();
+          if (data.logs.length == 0)
+            list.html("<p align='center'>No entries in the selected date range</p>");
+          else {
+            var tbl_html = "<div data-role='collapsible-set' data-inset='true' data-theme='b' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u'>";
+            for (var i = 0; i < data.logs.length; i++) {
+                //iterate over schedules
+
+                var sched_mins = 0;
+                var sched_date = "";
+                var sched_num_zones = data.logs[i].entries.length;
+                var zones_html = "";
+                var sch_water_used = 0;
+
+                for (var j = 0; j < sched_num_zones; j++) {  // iterate over zones 
+                    var entry = data.logs[i].entries[j];
+                    var dt = new Date(entry.date * 1000);                    
+                    sched_mins += entry.duration;
+                    if (j == 0)
+                        sched_date = pad(dt.getUTCFullYear(), 4) + '/' + pad(dt.getUTCMonth() + 1, 2) + '/' + pad(dt.getUTCDate(), 2) + ' ' + pad(dt.getUTCHours(), 2) + ':' + pad(dt.getUTCMinutes(), 2);
+                    var timestr = pad(dt.getUTCHours(), 2) + ':' + pad(dt.getUTCMinutes(), 2);
+                    sch_water_used += entry.water_used;
+
+                    zones_html += "<tr><td>" + timestr + "</td>";
+                    zones_html += "<td>" + zonestorage[entry.zone].name + "</td>";
+                    zones_html += "<td>" + Math.floor(entry.duration / 60) + ":" + pad(entry.duration % 60, 2) + "</td>";
+                    zones_html += "<td>" + entry.water_used + "</td>";
+                    zones_html += format_adjustments(entry.seasonal);
+                    zones_html += format_adjustments(entry.wunderground) + "</tr>";
+                }
+
+                tbl_html += "<div data-role='collapsible' data-theme='b' data-content-theme='d' data-inset='true' data-collapsed='true'>" +
+                  "<h2><div class='ui-btn-up-c ui-btn-corner-all'>" + sched_date + " Schedule:" + data.logs[i].scheduleName + ", " + sched_mins + "min, " + sch_water_used + "gal, " + sched_num_zones +
+                  ((sched_num_zones > 1) ? " zones" : " zone") + "</div>" +
+                  "</h2><table class='tablepane'><thead><tr><th data-priority='1'>&nbsp Time &nbsp</th><th data-priority='2'>Zone</th><th data-priority='3'>&nbsp Runtime, min &nbsp</th><th data-priority='3'>&nbsp Water, gal &nbsp</th>" +
+                  "<th data-priority='4'>&nbsp SAdj &nbsp</th><th data-priority='5'>&nbsp WUnd &nbsp</th></tr></thead><tbody>";
+
+                tbl_html += zones_html;
+                tbl_html += "</tbody></table></div>";
+            }
+            tbl_html += "</div>";
+            list.html(tbl_html).trigger("create");
+          }
+        }
+
+        var plotdata = [];
+        function doRefresh() {
+          if ($("input:radio[name='log_type']:checked").val() == 'graph') {
+              var pageName = "json/tlogs?sdate=" + (new Date($('#sdate').val()).getTime() / 1000) +
+                  "&edate=" + (new Date($('#edate').val()).getTime() / 1000);
+              //alert("Getting schedules log, query string='" + pageName + "'");
+              $.getJSON(pageName, function (data) {
+                  plotdata = data.logs;
+                  seriesChange();
+            });
+          }
+          else if ($("input:radio[name='log_type']:checked").val() == 'schedule') {
+              var pageName = "json/schlogs?sdate=" + (new Date($('#sdate').val()).getTime() / 1000) +
+                  "&edate=" + (new Date($('#edate').val()).getTime() / 1000);
+              //alert("Getting schedules log, query string='" + pageName + "'");
+              $.getJSON(pageName, function (data) {
+                  tableSchedChange(data);
+              });
+          }
+          else {
+            var pageName = "json/tlogs?sdate=" + (new Date($('#sdate').val()).getTime()/1000) +
+                "&edate=" + (new Date($('#edate').val()).getTime()/1000);
+            $.getJSON(pageName, function (data) {
+              tableChange(data);
+            });
+          }
+        }
+      </script>
+      <div data-theme="a" data-role="header">
+        <a data-role="button" data-direction="reverse" data-rel="back" href="#page1" data-icon="back" data-iconpos="left" class="ui-btn-left">Back</a>
+        <a href="javascript:doRefresh();" data-icon="refresh">Refresh</a>
+        <h3>Logs</h3>
+      </div>
+      <div data-role="content">
+        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" align="center">
+            <input data-mini="true" type="radio" name="log_type" id="log_sched" value="schedule" checked="checked" />
+            <label for="log_sched">Schedules</label>
+            <input data-mini="true" type="radio" name="log_type" id="log_table" value="table" />
+            <label for="log_table">Details</label>
+            <input data-mini="true" type="radio" name="log_type" id="log_graph" value="graph" />
+            <label for="log_graph">Graph</label>
+        </fieldset>
+        <div id="graphpane">
+          <div id="logsChartPlaceholder" style="width:100%;height:300px;"></div>
+
+          <div id="zones" data-role="fieldcontain"></div>
+          <form id="lForm" action="#" method="get" data-ajax="false">
+            <div data-role="fieldcontain">
+              <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                <legend>Graph type:</legend>
+                <input type="radio" name="graph_type" id="radio-choice-a" value="t" checked="checked" />
+                <label for="radio-choice-a">Watering time</label>
+                <input type="radio" name="graph_type" id="radio-choice-b" value="wu" />
+                <label for="radio-choice-b">Historical Water Usage</label>
+                <input type="radio" name="graph_type" id="radio-choice-c" value="zu" />
+                <label for="radio-choice-c">Water Usage by Zones</label>
+              </fieldset>
+            </div>
+          </form>
+        </div>
+        <div id="tablepane" style="text-align:center"></div>
+        <div data-role="fieldcontain">
+            <label for="sdate">Start</label>
+            <input id="sdate" name="sdate" value="" type="date" data-mini="true" onchange="javascript:dateChange(this)"/>
+            <label for="edate">End</label>
+            <input id="edate" name="edate" value="" type="date" data-mini="true" onchange="javascript:dateChange(this)"/>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>

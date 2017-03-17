@@ -1,0 +1,12 @@
+﻿Build started 5/14/2016 3:18:40 PM.
+     1>Project "C:\Users\Tony\Documents\SmartGarden\RPi-MasterStation\Station\SmartGarden-RPi-Station.vcxproj" on node 2 (Build target(s)).
+     1>Build:
+         arm-linux-gnueabihf-gcc-4.6.exe -Wall -O3 %sources% -o %executable% -lwiringPi
+         'arm-linux-gnueabihf-gcc-4.6.exe' is not recognized as an internal or external command,
+         operable program or batch file.
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.MakeFile.Targets(38,5): error MSB3073: The command "arm-linux-gnueabihf-gcc-4.6.exe -Wall -O3 %sources% -o %executable% -lwiringPi" exited with code 9009.
+     1>Done Building Project "C:\Users\Tony\Documents\SmartGarden\RPi-MasterStation\Station\SmartGarden-RPi-Station.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.08

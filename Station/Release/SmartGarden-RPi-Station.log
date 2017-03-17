@@ -1,0 +1,9 @@
+﻿Build started 7/23/2016 3:17:37 PM.
+     1>Project "C:\Users\Tony\Documents\SmartGarden\RPi-MasterStation\Station\SmartGarden-RPi-Station.vcxproj" on node 2 (Rebuild target(s)).
+     1>Rebuild:
+         arm-linux-gnueabihf-g++.exe *.cpp -o Station  -lwiringPi -I C:\Users\Tony\Documents\SmartGarden\RPi-MasterStation\Libraries 
+     1>Done Building Project "C:\Users\Tony\Documents\SmartGarden\RPi-MasterStation\Station\SmartGarden-RPi-Station.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.51
