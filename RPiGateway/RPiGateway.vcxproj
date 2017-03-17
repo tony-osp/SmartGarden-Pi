@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C7ABA16C-1E11-46AB-A97F-8E8BF7FDA097}</ProjectGuid>
+    <RootNamespace>RPiGateway</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino;C:\Users\Tony\Documents\Arduino\hardware\Moteino\variants\MoteinoMEGA;D:\Program Files (x86)\Arduino\libraries\SPI;D:\Program Files (x86)\Arduino\libraries\SPI\utility;D:\Program Files (x86)\Arduino\libraries\EEPROM;D:\Program Files (x86)\Arduino\libraries\EEPROM\utility;C:\Users\Tony\Documents\Arduino\libraries\Time;C:\Users\Tony\Documents\Arduino\libraries\Time\utility;D:\Program Files (x86)\Arduino\libraries\Wire;D:\Program Files (x86)\Arduino\libraries\Wire\utility;C:\Users\Tony\Documents\Arduino\libraries\RFM69;C:\Users\Tony\Documents\Arduino\libraries\RFM69\utility;C:\Users\Tony\Documents\Arduino\libraries\TimerOne;C:\Users\Tony\Documents\Arduino\libraries\TimerOne\utility;C:\Users\Tony\Documents\Arduino\libraries\SdFat;C:\Users\Tony\Documents\Arduino\libraries\SdFat\utility;D:\Program Files (x86)\Arduino\libraries;C:\Users\Tony\Documents\Arduino\hardware\Moteino\libraries;D:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers;C:\Users\Tony\Documents\Arduino\libraries;d:\program files (x86)\arduino\hardware\tools\avr\avr\include\;d:\program files (x86)\arduino\hardware\tools\avr\avr\include\avr\;d:\program files (x86)\arduino\hardware\tools\avr\avr\;d:\program files (x86)\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>C:\Users\Tony\Documents\SmartGarden\RPi-MasterStation\RPiGateway\Visual Micro\.RPiGateway.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
+      <PreprocessorDefinitions>__AVR_ATmega1284p__;__AVR_ATmega1284P__;ARDUINO=106;ARDUINO_MAIN;__AVR__;__avr__;F_CPU=16000000L;__cplusplus;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino;C:\Users\Tony\Documents\Arduino\hardware\Moteino\variants\MoteinoMEGA;D:\Program Files (x86)\Arduino\libraries\SPI;D:\Program Files (x86)\Arduino\libraries\SPI\utility;D:\Program Files (x86)\Arduino\libraries\EEPROM;D:\Program Files (x86)\Arduino\libraries\EEPROM\utility;C:\Users\Tony\Documents\Arduino\libraries\Time;C:\Users\Tony\Documents\Arduino\libraries\Time\utility;D:\Program Files (x86)\Arduino\libraries\Wire;D:\Program Files (x86)\Arduino\libraries\Wire\utility;C:\Users\Tony\Documents\Arduino\libraries\RFM69;C:\Users\Tony\Documents\Arduino\libraries\RFM69\utility;C:\Users\Tony\Documents\Arduino\libraries\TimerOne;C:\Users\Tony\Documents\Arduino\libraries\TimerOne\utility;C:\Users\Tony\Documents\Arduino\libraries\SdFat;C:\Users\Tony\Documents\Arduino\libraries\SdFat\utility;D:\Program Files (x86)\Arduino\libraries;C:\Users\Tony\Documents\Arduino\hardware\Moteino\libraries;D:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers;C:\Users\Tony\Documents\Arduino\libraries;d:\program files (x86)\arduino\hardware\tools\avr\avr\include\;d:\program files (x86)\arduino\hardware\tools\avr\avr\include\avr\;d:\program files (x86)\arduino\hardware\tools\avr\avr\;d:\program files (x86)\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="RPiGateway.ino">
+      <FileType>CppCode</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="MoteinoRF.h" />
+    <ClInclude Include="port.h" />
+    <ClInclude Include="SGGSerial.h" />
+    <ClInclude Include="SgWdt.h" />
+    <ClInclude Include="Visual Micro\.RPiGateway.vsarduino.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MoteinoRF.cpp" />
+    <ClCompile Include="port.cpp" />
+    <ClCompile Include="SGGSerial.cpp" />
+    <ClCompile Include="SgWdt.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM4" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
