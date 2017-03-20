@@ -18,12 +18,12 @@ $RECYCLE.BIN/
 *.lnk
 
 #Visual Studio files
-#*.sdf
-#*.sln
-#*.suo
-#*.vcxproj
-#*.filters
-#*.user
+*.sdf
+*.sln
+*.suo
+*.vcxproj
+*.filters
+*.user
 
 
 # =========================
