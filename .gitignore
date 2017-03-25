@@ -22,12 +22,14 @@ $RECYCLE.BIN/
 *.opensdf
 *.sln
 *.suo
+*.v11.suo
 *.vcxproj
 *.filters
 *.user
 
 #Visual Micro files
 *.vmps.xml
+RPiGateway/Visual Micro/*
 
 
 # =========================
