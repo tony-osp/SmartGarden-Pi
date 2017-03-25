@@ -67,6 +67,11 @@ void SGGRFClass::begin()
 		SYSEVT_ERROR(F("SG GW init - failed to set Xbee Chan"));
 		goto failed_ex1;
 	}
+	if( !sendAtCommandParam(PSTR("MY"), GetXBeeAddr()) )
+	{
+		SYSEVT_ERROR(F("SG GW init - failed to set Xbee Addr"));
+		goto failed_ex1;
+	}
 	if( !sendAtCommand(PSTR("AC")) )
 	{
 		SYSEVT_ERROR(F("SG GW init - failed to execute AC command"));
