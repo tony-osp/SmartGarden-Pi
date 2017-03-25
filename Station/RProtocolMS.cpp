@@ -29,7 +29,7 @@ Copyright 2014-2016 tony-osp (http://tony-osp.dreamwidth.org/)
 #include "MoteinoRF.h"
 #endif //HW_ENABLE_MOTEINORF
 
-//#define TRACE_LEVEL			7		// trace everything for this module
+#define TRACE_LEVEL			7		// trace everything for this module
 #include "port.h"
 
 
@@ -748,7 +748,7 @@ bool RProtocolMaster::SendReadSystemRegisters( uint8_t stationID, uint8_t startR
         Message.Header.ProtocolID = RPROTOCOL_ID;
 		Message.Header.FCode = FCODE_SYSREGISTERS_READ;
         Message.Header.ToUnitID = stationID;
-        Message.Header.FromUnitID = MY_STATION_ID;
+        Message.Header.FromUnitID = GetMyStationID();
         Message.Header.Length = sizeof(RMESSAGE_SYSREGISTERS_READ)-sizeof(RMESSAGE_HEADER);
 		Message.Header.TransactionID = transactionID;
 
@@ -785,7 +785,7 @@ bool RProtocolMaster::SendReadSensors( uint8_t stationID, uint16_t transactionID
         Message.Header.ProtocolID = RPROTOCOL_ID;
 		Message.Header.FCode = FCODE_SENSORS_READ;
         Message.Header.ToUnitID = stationID;
-        Message.Header.FromUnitID = MY_STATION_ID;
+        Message.Header.FromUnitID = GetMyStationID();
         Message.Header.Length = sizeof(RMESSAGE_SENSORS_READ)-sizeof(RMESSAGE_HEADER);
 		Message.Header.TransactionID = transactionID;
 
@@ -818,7 +818,7 @@ bool RProtocolMaster::SendForceSingleZone( uint8_t stationID, uint8_t channel, u
         Message.Header.ProtocolID = RPROTOCOL_ID;
 		Message.Header.FCode = FCODE_ZONES_SET;
         Message.Header.ToUnitID = stationID;
-        Message.Header.FromUnitID = MY_STATION_ID;
+        Message.Header.FromUnitID = GetMyStationID();
         Message.Header.Length = sizeof(RMESSAGE_ZONES_SET)-sizeof(RMESSAGE_HEADER);
 		Message.Header.TransactionID = transactionID;
 
@@ -852,7 +852,7 @@ bool RProtocolMaster::SendTurnOffAllZones( uint8_t stationID, uint16_t transacti
         Message.Header.ProtocolID = RPROTOCOL_ID;
 		Message.Header.FCode = FCODE_ZONES_SET;
         Message.Header.ToUnitID = stationID;
-        Message.Header.FromUnitID = MY_STATION_ID;
+        Message.Header.FromUnitID = GetMyStationID();
         Message.Header.Length = sizeof(RMESSAGE_ZONES_SET)-sizeof(RMESSAGE_HEADER);
 		Message.Header.TransactionID = transactionID;
 
@@ -947,7 +947,7 @@ bool RProtocolMaster::SendRegisterEvtMaster( uint8_t stationID, uint8_t eventsMa
         Message.Header.ProtocolID = RPROTOCOL_ID;
 		Message.Header.FCode = FCODE_EVTMASTER_SET;
         Message.Header.ToUnitID = stationID;
-        Message.Header.FromUnitID = MY_STATION_ID;
+        Message.Header.FromUnitID = GetMyStationID();
         Message.Header.Length = sizeof(RMESSAGE_EVTMASTER_SET)-sizeof(RMESSAGE_HEADER);
 		Message.Header.TransactionID = transactionID;
 
@@ -976,7 +976,7 @@ inline void SendTimeBroadcastInt(void)
         Message.Header.ProtocolID = RPROTOCOL_ID;
 		Message.Header.FCode = FCODE_TIME_BROADCAST;
         Message.Header.ToUnitID = STATIONID_BROADCAST;	// broadcast
-        Message.Header.FromUnitID = MY_STATION_ID;
+        Message.Header.FromUnitID = GetMyStationID();
         Message.Header.Length = sizeof(RMESSAGE_TIME_BROADCAST)-sizeof(RMESSAGE_HEADER);
 		Message.Header.TransactionID = 0;
 
