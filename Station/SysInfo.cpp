@@ -7,7 +7,7 @@ This module dumps system configuration and other information as an HTML page.
 
 
 Creative Commons Attribution-ShareAlike 3.0 license
-Copyright 2014 tony-osp (http://tony-osp.dreamwidth.org/)
+Copyright 2014-2017 tony-osp (http://tony-osp.dreamwidth.org/)
 
 
 */
@@ -73,10 +73,18 @@ bool SysInfo(FILE* stream_file)
 #elif defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega1284p__)
 	fprintf_P( stream_file, PSTR("<td>%d bytes (out of 16KB total)</td>\n"), GetFreeMemory());
 #else
-	fprintf_P( stream_file, PSTR("<td>%d bytes </td>\n"), GetFreeMemory());
+	int freeMem = GetFreeMemory();
+	if( freeMem == -1 )
+		fprintf_P( stream_file, PSTR("<td>OS Managed </td>\n"));
+	else
+		fprintf_P( stream_file, PSTR("<td>%d bytes </td>\n"), freeMem);
 #endif
 
+#ifdef ARDUINO
 	fprintf_P( stream_file, PSTR("</tr><tr>\n<td>Network</td>\n<td>Ethernet W5100/W5500 (100 Mbps)</td>\n"));
+#else
+	fprintf_P( stream_file, PSTR("</tr><tr>\n<td>Network</td>\n<td>OS Managed</td>\n"));
+#endif
 	fprintf_P( stream_file, PSTR("</tr><tr>\n<td>Storage</td>\n<td>MicroSD Card</td>\n</tr><tr>\n<td>Local LCD</td>\n<td>"));
 	fprintf_P( stream_file, PSTR("%d character X %d lines</td>\n</tr></table>\n"), LOCAL_UI_LCD_X, LOCAL_UI_LCD_Y);
 
