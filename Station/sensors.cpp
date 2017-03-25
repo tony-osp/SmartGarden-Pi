@@ -266,7 +266,7 @@ void Sensors::loop(void)
                                                 // and for detecting minutes changes it does not make any difference.
 
 #ifdef SENSORS_FAST_POLL
-       if( (new_millis - old_millis) >= 1000 ){   // debug - 1 sec instead of 1 minute
+       if( (new_millis - old_millis) >= 10000ul ){   // debug - 10 sec instead of 1 minute
 #else
 	   if( (new_millis - old_millis) >= 60000ul ){   // one minute detection
 #endif //SENSORS_FAST_POLL
