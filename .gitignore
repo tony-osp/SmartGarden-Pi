@@ -19,11 +19,15 @@ $RECYCLE.BIN/
 
 #Visual Studio files
 *.sdf
+*.opensdf
 *.sln
 *.suo
 *.vcxproj
 *.filters
 *.user
+
+#Visual Micro files
+*.vmps.xml
 
 
 # =========================
