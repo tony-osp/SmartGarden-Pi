@@ -147,7 +147,7 @@ uint32_t  EthernetServer::gatewayIP()
 
 
 //  This function blocks until we get a client connected.
-//   It will timeout after 50ms and return a blank client.
+//   It will timeout after 10ms and return a blank client.
 //   If it succeeds it will return an EthernetClient.
 EthernetClient EthernetServer::available()
 {
@@ -156,7 +156,7 @@ EthernetClient EthernetServer::available()
 	FD_SET(m_sock, &sock_set);
 	struct timeval timeout;
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 50 * 1000; // 50ms
+	timeout.tv_usec = 10 * 1000; // 50ms
 
 	select(m_sock + 1, &sock_set, NULL, NULL, &timeout);
 	if (FD_ISSET(m_sock, &sock_set))
