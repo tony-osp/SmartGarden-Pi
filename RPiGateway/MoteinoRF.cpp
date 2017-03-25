@@ -134,9 +134,10 @@ bool MoteinoRFClass::sendPacket(uint8_t nStation, bool fDisableACK, void *msg, u
 		// increase sequence counter for this destination
 		if( MoteinoRF.uNextSNumber[nStation] == 254 )	MoteinoRF.uNextSNumber[nStation] = 0;
 		else											MoteinoRF.uNextSNumber[nStation]++;
+		
 		if(!retFlag)
 		{
-			TRACE_ERROR(F("MoteinoRF - sendWithRetry returned %d"), int16_t(retFlag));
+			TRACE_ERROR(F("MoteinoRF - sendWithRetry returned %d\n"), int16_t(retFlag));
 		}
 
 		return retFlag;
