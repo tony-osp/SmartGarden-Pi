@@ -31,6 +31,8 @@ $RECYCLE.BIN/
 *.vmps.xml
 RPiGateway/Visual Micro/*
 
+# Project binary output
+Station.
 
 # =========================
 # Operating System Files
