@@ -26,6 +26,9 @@ $RECYCLE.BIN/
 *.vcxproj
 *.filters
 *.user
+*.VC.db
+*.VC.opendb
+*.log
 
 #Visual Micro files
 *.vmps.xml
