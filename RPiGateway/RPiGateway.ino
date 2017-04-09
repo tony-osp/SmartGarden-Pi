@@ -72,7 +72,7 @@ void setup()
 
 	if( CheckEEPROMHeader() )
 	{
-		TRACE_INFO(F("RPiGateway Starting, FW %d.%d\n"), EEPROM.read(ADDR_VERSION_MAJOR), EEPROM.read(ADDR_VERSION_MINOR));
+		TRACE_CRIT(F("RPiGateway Starting, FW %d.%d\n"), EEPROM.read(ADDR_VERSION_MAJOR), EEPROM.read(ADDR_VERSION_MINOR));
 	}
 	else
 	{
@@ -81,7 +81,7 @@ void setup()
 		EEPROM.write(ADDR_NODE_ID, DEFAULT_STATION_ID);
 		EEPROM.write(ADDR_PAN_ID, NETWORK_MOTEINORF_DEFAULT_PANID);
 
-		TRACE_INFO(F("RPiGateway Starting and initializing EEPROM, FW %d.%d\n"), EEPROM.read(ADDR_VERSION_MAJOR), EEPROM.read(ADDR_VERSION_MINOR));
+		TRACE_CRIT(F("RPiGateway Starting and initializing EEPROM, FW %d.%d\n"), EEPROM.read(ADDR_VERSION_MAJOR), EEPROM.read(ADDR_VERSION_MINOR));
 	}
 
 	MoteinoRF.begin();
