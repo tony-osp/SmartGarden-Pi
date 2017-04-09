@@ -7,7 +7,6 @@
 #include <SdFat.h>
 #include <stdio.h>
 #include <EEPROM.h>
-#include <Ethernet.h>
 
 #include "Defines.h"
 
