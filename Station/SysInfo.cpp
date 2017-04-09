@@ -194,12 +194,18 @@ bool SysInfo(FILE* stream_file)
 		LoadStation(i, &fStation);
 		if( (fStation.stationFlags & STATION_FLAGS_VALID) && (fStation.stationFlags & STATION_FLAGS_ENABLED) )
 		{
-			if(      fStation.networkID == NETWORK_ID_LOCAL_PARALLEL )	strcpy_P(tmp_buf, PSTR("Parallel"));
-			else if( fStation.networkID == NETWORK_ID_LOCAL_SERIAL )	strcpy_P(tmp_buf, PSTR("Serial (OS)"));
-			else if( fStation.networkID == NETWORK_ID_XBEE )			strcpy_P(tmp_buf, PSTR("Remote XBee"));
-			else if( fStation.networkID == NETWORK_ID_MOTEINORF )		strcpy_P(tmp_buf, PSTR("Remote RFM69"));
-			else														strcpy_P(tmp_buf, PSTR("Unknown!"));
-
+			if (i == GetMyStationID())
+			{
+				strcpy_P(tmp_buf, PSTR("This Station"));
+			}
+			else
+			{
+				if (fStation.networkID == NETWORK_ID_LOCAL_PARALLEL)	strcpy_P(tmp_buf, PSTR("Parallel"));
+				else if (fStation.networkID == NETWORK_ID_LOCAL_SERIAL)	strcpy_P(tmp_buf, PSTR("Serial (OS)"));
+				else if (fStation.networkID == NETWORK_ID_XBEE)			strcpy_P(tmp_buf, PSTR("Remote XBee"));
+				else if (fStation.networkID == NETWORK_ID_MOTEINORF)		strcpy_P(tmp_buf, PSTR("Remote RFM69"));
+				else														strcpy_P(tmp_buf, PSTR("Unknown!"));
+			}
 			fprintf_P( stream_file, PSTR("<tr class=\"auto-style3\"><td>%i</td><td>%s</td><td>%i</td><td>%s</td>"), i, fStation.name, fStation.numZoneChannels, tmp_buf );
 			
 			if((fStation.networkID == NETWORK_ID_XBEE) || (fStation.networkID == NETWORK_ID_MOTEINORF)  )
@@ -218,7 +224,10 @@ bool SysInfo(FILE* stream_file)
 				}
 				else
 				{
-					fprintf_P( stream_file, PSTR("<td>No contact</td><td></td></tr>\n"));
+					if (i == GetMyStationID())
+						fprintf_P(stream_file, PSTR("<td>N/A</td><td></td></tr>\n"));
+					else
+						fprintf_P( stream_file, PSTR("<td>No contact</td><td></td></tr>\n"));
 				}
 			}			
 			else
