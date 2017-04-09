@@ -27,7 +27,7 @@ Copyright 2015 tony-osp (http://tony-osp.dreamwidth.org/)
 #define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 
 #define NETWORK_MOTEINORF_RETRY_COUNT		3
-//#define NETWORK_MOTEINORF_USE_INTERRUPT		1		// use interrupts
+#define NETWORK_MOTEINORF_USE_INTERRUPT		1		// use interrupts
 
 
 // ***TEMPORARY***
