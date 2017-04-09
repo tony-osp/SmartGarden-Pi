@@ -20,6 +20,7 @@ Copyright 2014 tony-osp (http://tony-osp.dreamwidth.org/)
 */
 
 #include "Defines.h"
+
 //#define TRACE_LEVEL			7		// all info including verbose
 #include "port.h"
 
@@ -500,6 +501,8 @@ void Sensors::ReportSensorReading( uint8_t stationID, uint8_t sensorChannel, int
 {
 	uint8_t			numS = GetNumSensors();
 
+	TRACE_VERBOSE(F("ReportSensorReading - reporting sensor, stationID=%d, channel=%d, reading=%ld\n"), (int)stationID, (int)sensorChannel, (int32_t)sensorReading);
+
 	for( uint8_t i=0; i<numS; i++ )
 	{
 		if( SensorsList[i].config.sensorType != SENSOR_TYPE_NONE )	// just in case check, ensuring that the entry is valid
@@ -532,7 +535,7 @@ void Sensors::ReportSensorReading( uint8_t stationID, uint8_t sensorChannel, int
 	}
 // scan complete but we have not found the sensor we need.
 
-	TRACE_ERROR(F("ReportSensorReading - cannot find sensor, stationID=%d, channel=%d\n"), (int)stationID, (int)sensorChannel);
+	TRACE_ERROR(F("ReportSensorReading - cannot find sensor, stationID=%d, channel=%d, reading=%ld\n"), (int)stationID, (int)sensorChannel, (int32_t)sensorReading);
 }
 
 // Sensors handling
