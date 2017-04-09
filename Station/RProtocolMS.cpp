@@ -1273,14 +1273,14 @@ void RProtocolMaster::ProcessNewFrame(uint8_t *ptr, int len, uint8_t *pNetAddres
 								MessagePing( ptr );
 								break;
 
-//
-// Packets used when acting as a client
-//
-#ifdef SG_RF_TIME_CLIENT
 				case FCODE_TIME_BROADCAST:
-								MessageTimeBroadcast( ptr );
-								break;
+					//
+					// Packets used when acting as a client
+					//
+#ifdef SG_RF_TIME_CLIENT
+								MessageTimeBroadcast( ptr );		// process external time broadcast messages only if acting as a client
 #endif //SG_RF_TIME_CLIENT
+								break;
 #ifdef SG_STATION_SLAVE
 				case FCODE_ZONES_READ:	
 								MessageZonesRead( ptr );
