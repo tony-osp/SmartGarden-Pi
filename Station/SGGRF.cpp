@@ -17,6 +17,8 @@ Copyright 2014-2016 tony-osp (http://tony-osp.dreamwidth.org/)
 //#define TRACE_LEVEL			6		// trace everything for this module
 #include "port.h"
 
+extern int16_t		LastReceivedRSSI;	//extern, defined in RProtocolMS
+
 
 //// Global core XBee object
 XBee	xbee;				
@@ -237,8 +239,6 @@ bool SGGRFSendPacket(uint8_t nStation, void *msg, uint8_t mSize)
 	if( nStation == STATIONID_BROADCAST )tx.setOption(8);   // send broadcast
 	else								 tx.setOption(0);	// send unicast
 
-	TRACE_INFO(F("Sending message to station %u\n"), uint16_t(nStation) );
-
 	SGGRF.frameIDCounter++;	// increment rolling counter
 	tx.setFrameId(0);			// set FrameID to 0, which means that XBee will not give us TX confirmation response.
 
@@ -291,7 +291,8 @@ void SGGRFClass::loop(void)
 					return;
 				}
 
-				TRACE_VERBOSE(F("SG GW.loop - processing packet from station %d"), rx16.getRemoteAddress16());
+				LastReceivedRSSI = -int16_t(rx16.getRssi());		// RSSI is reported as 8bit value but assumed to be negative
+				TRACE_VERBOSE(F("SG GW.loop - processing packet from station %d\n"), rx16.getRemoteAddress16());
 				rprotocol.ProcessNewFrame(msg+4, msg_len-4, 0 );	// process incoming packet.
 																		// Note: we don't copy the packet, and just use pointer to the packet already in XBee library buffer
 				return;
