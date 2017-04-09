@@ -319,14 +319,47 @@ void SGGRFClass::loop(void)
 				return;
 		} 
 
+		else if (responseID == 0x0F0)	// SG GW syslog frame
+		{
+			uint8_t  *msg = xbee.getResponse().getFrameData();
+			uint8_t	 msg_len = xbee.getResponse().getFrameDataLength();
+
+			if (msg_len < 5)
+			{
+				SYSEVT_ERROR(F("SG GW.loop - incoming syslog message from SG GW is too small"));
+				return;
+			}
+
+			// first byte of the payload will be severity code, the rest is null-terminated actual message
+
+			if( msg[0] <= SYSEVENT_CRIT )
+			{
+				SYSEVT_CRIT(F("SG GW: %.*s"), msg_len-5, msg + 1); // msg_len includes 4 bytes of framing (msb, lsb, API ID and frameID) as well as first byte of payload is the severity code
+			}
+			else if( msg[0] == SYSEVENT_ERROR )
+			{
+				SYSEVT_ERROR(F("SG GW: %.*s"), msg_len - 5, msg + 1);
+			}
+			else if (msg[0] <= SYSEVENT_INFO)
+			{
+				SYSEVT_INFO(F("SG GW: %.*s"), msg_len - 5, msg + 1);
+			}
+			else
+			{
+				SYSEVT_VERBOSE(F("SG GW: %.*s"), msg_len - 5, msg + 1);
+			}
+
+			return;
+		}
+
 		else {
-			SYSEVT_ERROR(F("SG GW.loop - Unrecognized frame from XBee %d"), responseID);
+			SYSEVT_ERROR(F("SG GW.loop - Unrecognized frame from SG GW %d"), responseID);
 			return;
 		}   
 	} 
 	else if( xbee.getResponse().isError() ) 
 	{
-		SYSEVT_ERROR(F("SG GW.loop - XBee reported error.  Error code: %d"), xbee.getResponse().getErrorCode());
+		SYSEVT_ERROR(F("SG GW.loop - SG GW reported error.  Error code: %d"), xbee.getResponse().getErrorCode());
 		return;
 	}
 
