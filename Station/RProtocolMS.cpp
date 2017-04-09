@@ -29,7 +29,7 @@ Copyright 2014-2016 tony-osp (http://tony-osp.dreamwidth.org/)
 #include "MoteinoRF.h"
 #endif //HW_ENABLE_MOTEINORF
 
-#define TRACE_LEVEL			7		// trace everything for this module
+//#define TRACE_LEVEL			7		// trace everything for this module
 #include "port.h"
 
 
@@ -606,7 +606,6 @@ inline void MessageSensorsReport( void *ptr )
 	{
 //		SYSEVT_ERROR(F("MessageSensorsReport - reporting sensor reading, station=%d, channel=%d\n"), (int)(pMessage->Header.FromUnitID), (int)(nFirstSensor+i));		
 		sensorsModule.ReportSensorReading(pMessage->Header.FromUnitID, nFirstSensor+i, (int) (pMessage->SensorsData[i]));
-//		SYSEVT_ERROR(F("station=%d after return from ReportSensorReading\n"), (int)(pMessage->Header.FromUnitID));
 	}
 }
  

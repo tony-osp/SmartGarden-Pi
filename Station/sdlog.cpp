@@ -19,7 +19,6 @@ Copyright 2014 tony-osp (http://tony-osp.dreamwidth.org/)
 #include "RProtocolMS.h"
 #include "Ard_time.h"
 
-//#define TRACE_LEVEL			7		// trace everything for this module
 #include "port.h"
 
 

@@ -24,6 +24,7 @@ Copyright 2014-2016 tony-osp (http://tony-osp.dreamwidth.org/)
 #define ENABLE_TRACE	1		// enable trace output (via Serial port)
 //#define TRACE_LEVEL		2		// critical and alert messages only
 #define TRACE_LEVEL			7		// all info
+
 #define TRACE_FREERAM_LIMIT	2000	// when free RAM goes below this limit freeMem() calls will start producing critical notifications
 
 // System events level threshold. System events are written to the system log, also they are copied to the trace output.
