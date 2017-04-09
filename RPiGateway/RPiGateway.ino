@@ -41,6 +41,27 @@ Copyright 2014-2016 tony-osp (http://tony-osp.dreamwidth.org/)
 
 int16_t		LastReceivedRSSI;
 
+static const char * const sHeader = SG_FIRMWARE_SHEADER;
+
+bool CheckEEPROMHeader()
+{
+		if( (EEPROM.read(ADDR_SHEADER) == sHeader[0]) && (EEPROM.read(ADDR_SHEADER+1) == sHeader[1]) && (EEPROM.read(ADDR_SHEADER+2) == sHeader[2]) && (EEPROM.read(ADDR_SHEADER+3) == sHeader[3]) )
+            return true;
+
+        return false;
+}
+
+void SaveEEPROMHeader()
+{
+        for (int i = 0; i <= 3; i++)			// write current signature
+                EEPROM.write(ADDR_SHEADER+i, sHeader[i]);
+
+		EEPROM.write(ADDR_VERSION_MAJOR, SG_FIRMWARE_VERSION_MAJOR);
+		EEPROM.write(ADDR_VERSION_MINOR, SG_FIRMWARE_VERSION_MINOR);
+}
+
+
+
 void setup()
 {
 #ifdef SG_WDT_ENABLED
@@ -48,12 +69,23 @@ void setup()
 #endif // SG_WDT_ENABLED
 
 	trace_setup(Serial, 115200);		// we use Serial0 for debug
-	TRACE_CRIT(F("Start!\n"));
 
-    TRACE_INFO(F("MoteinoRF init\n"));
+	if( CheckEEPROMHeader() )
+	{
+		TRACE_INFO(F("RPiGateway Starting, FW %d.%d\n"), EEPROM.read(ADDR_VERSION_MAJOR), EEPROM.read(ADDR_VERSION_MINOR));
+	}
+	else
+	{
+		SaveEEPROMHeader();
+
+		EEPROM.write(ADDR_NODE_ID, DEFAULT_STATION_ID);
+		EEPROM.write(ADDR_PAN_ID, NETWORK_MOTEINORF_DEFAULT_PANID);
+
+		TRACE_INFO(F("RPiGateway Starting and initializing EEPROM, FW %d.%d\n"), EEPROM.read(ADDR_VERSION_MAJOR), EEPROM.read(ADDR_VERSION_MINOR));
+	}
+
 	MoteinoRF.begin();
 	
-    TRACE_INFO(F("SGGSerial init\n"));
 	SGGSerial.begin();
 
 }

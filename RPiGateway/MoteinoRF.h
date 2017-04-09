@@ -26,8 +26,8 @@ Copyright 2015 tony-osp (http://tony-osp.dreamwidth.org/)
 //#define ENCRYPTKEY      "sampleEncryptKey" //has to be same 16 characters/bytes on all nodes, not more not less!
 #define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 
-#define NETWORK_MOTEINORF_DEFAULT_PANID	55
-#define NETWORK_MOTEINORF_RETRY_COUNT	5
+#define NETWORK_MOTEINORF_RETRY_COUNT		3
+//#define NETWORK_MOTEINORF_USE_INTERRUPT		1		// use interrupts
 
 
 // ***TEMPORARY***

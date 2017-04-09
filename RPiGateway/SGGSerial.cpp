@@ -14,6 +14,8 @@ Copyright 2016 tony-osp (http://tony-osp.dreamwidth.org/)
 void SGGSerialClass::begin()
 {
 	Serial1.begin(HOST_SERCOMM_SPEED);	// we use Serial1 for communication with the Host
+    
+	TRACE_INFO(F("SGGSerial init, speed %lu\n"), uint32_t(HOST_SERCOMM_SPEED));
 }
 
 // Worker routines
@@ -22,13 +24,13 @@ void SGGSerialClass::begin()
 // input packet processed routine. It will be called from newChar() when complete packet is received 
 inline void processNewPacket(uint8_t *buf, uint16_t buf_len)
 {
-	//TRACE_VERBOSE(F("SggSerial - received input packet with length=%u\n"), buf_len);
-
 	if( buf_len < 1 )
 	{
 		TRACE_ERROR(F("SggSerial - received bad packet with length=%u\n"), buf_len);
 		return;
 	}
+
+	TRACE_VERBOSE(F("SggSerial - received input packet with length=%u, cmd=%u\n"), buf_len, uint16_t(buf[0]));
 
 	switch( buf[0] )	// first byte of the packet is the API ID
 	{

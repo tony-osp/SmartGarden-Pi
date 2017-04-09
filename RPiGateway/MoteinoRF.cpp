@@ -34,8 +34,6 @@ extern int16_t		LastReceivedRSSI;
 
 RFM69 rfm69;
 
-//#define GetMoteinoRFAddr() DEFAULT_STATION_ID
-//#define GetMoteinoRFPANID() NETWORK_MOTEINORF_DEFAULT_PANID
 
 bool MoteinoRFClass::setChanID(uint8_t id)
 {
@@ -45,29 +43,33 @@ bool MoteinoRFClass::setChanID(uint8_t id)
 bool MoteinoRFClass::setNodeID(uint8_t id)
 {
 	nodeID = id;
+	EEPROM.write(ADDR_NODE_ID, nodeID);
+
 	return true;
 }
 
 bool MoteinoRFClass::setPANID(uint8_t id)
 {
 	panID = id;
+	EEPROM.write(ADDR_PAN_ID, panID);
+
 	return true;
 }
 
 MoteinoRFClass::MoteinoRFClass()
 {
 	fMoteinoRFReady = false;
-	nodeID = DEFAULT_STATION_ID;
-	panID = NETWORK_MOTEINORF_DEFAULT_PANID;
 }
 
 void MoteinoRFClass::begin()
 {
+	nodeID = EEPROM.read(ADDR_NODE_ID);
+	panID = EEPROM.read(ADDR_PAN_ID);
+
 	TRACE_INFO(F("Starting MoteinoRF, Node Addr:%u, PAN ID:%u\n"), uint16_t(nodeID), uint16_t(panID));
 
-	//bool initFlag = moteinoRF.initialize(MOTEINORF_FREQUENCY,GetMoteinoRFAddr(),GetMoteinoRFPANID());
 #ifdef NETWORK_MOTEINORF_USE_INTERRUPT
-	bool initFlag = moteinoRF.initialize(MOTEINORF_FREQUENCY,GetMoteinoRFAddr(),GetMoteinoRFPANID(), true); // use the lib in interrupt mode
+	bool initFlag = rfm69.initialize(MOTEINORF_FREQUENCY, nodeID, panID, true); // use the lib in interrupt mode
 #else
 	bool initFlag = rfm69.initialize(MOTEINORF_FREQUENCY, nodeID, panID, false); // use the lib in non-interrupt mode
 #endif
@@ -81,8 +83,8 @@ void MoteinoRFClass::begin()
 #ifdef IS_RFM69HW
 	rfm69.setHighPower(); //required only for RFM69HW!
 #endif
-	//moteinoRF.promiscuous(true);
-	//moteinoRF.encrypt(MOTEINORF_ENCRYPTKEY);
+	//rfm69.promiscuous(true);
+	//rfm69.encrypt(MOTEINORF_ENCRYPTKEY);
 
 	// initialize packet sequence counters
 	for( uint8_t i=0; i<MAX_STATIONS; i++ )
@@ -154,7 +156,7 @@ bool MoteinoRFClass::sendPacket(uint8_t nStation, bool fDisableACK, void *msg, u
 
 void MoteinoRFClass::loop(void)
 {
-	//TRACE_INFO(F("MoteinoRF - loop\n"));
+	//TRACE_VERBOSE(F("MoteinoRF - loop\n"));
 
 	if( rfm69.receiveDone() )
 	{
@@ -163,6 +165,8 @@ void MoteinoRFClass::loop(void)
 		uint8_t		senderID = rfm69.SENDERID;
 		uint8_t		targetID = rfm69.TARGETID;
 
+		TRACE_VERBOSE(F("MoteinoRF - got some data, len=%u\n"), uint16_t(rfm69.DATALEN));
+		
 		if( rfm69.DATALEN > 5 )
 		{
 			memcpy(buf, (uint8_t *)(rfm69.DATA), rfm69.DATALEN);
@@ -175,12 +179,12 @@ void MoteinoRFClass::loop(void)
 			TRACE_VERBOSE(F("MoteinoRF - ACK requested, sending it.\n"));
 		}
 
-		LastReceivedRSSI = rfm69.RSSI;	// update global RSSI tracker
+		LastReceivedRSSI = -rfm69.RSSI;	// update global RSSI tracker
 		if( buf_len > 5 )	
 		{
 			if( targetID == RF69_BROADCAST_ADDR )	// broadcast messages don't have sequence numbers
 			{
-				TRACE_VERBOSE(F("MoteinoRF - received broadcast packet from %d, len=%u\n"), int16_t(senderID), uint16_t(buf_len-1));
+				TRACE_VERBOSE(F("MoteinoRF - received broadcast packet from %d, len=%u, rssi=%d\n"), int16_t(senderID), uint16_t(buf_len-1), LastReceivedRSSI);
 				SGGSerial.sendRXFrameToHost(senderID, LastReceivedRSSI, 2, buf, buf_len); // bit 1 in options indicates broadcast addr
 			}
 			else if( senderID < MAX_STATIONS )	// basic protection to ensure we will not have an overflow. We handle packets only from senders with acceptable addresses (within MAX_STATION)
@@ -190,7 +194,7 @@ void MoteinoRFClass::loop(void)
 					if( buf[0] != 255 ) // valid sequence numbers are from 0 to 254
 						MoteinoRF.uLastReceivedSNumber[senderID] = buf[0];	// update last received serial number from that source
 
-					TRACE_VERBOSE(F("MoteinoRF - received packet from %d, SN=%u, len=%u\n"), int16_t(senderID), uint16_t(buf[0]), uint16_t(buf_len-1));			
+					TRACE_VERBOSE(F("MoteinoRF - received packet from %d, SN=%u, len=%u, rssi=%d\n"), int16_t(senderID), uint16_t(buf[0]), uint16_t(buf_len-1), LastReceivedRSSI);			
 					SGGSerial.sendRXFrameToHost(senderID, LastReceivedRSSI, 0, buf+1, buf_len-1);
 				}
 				else

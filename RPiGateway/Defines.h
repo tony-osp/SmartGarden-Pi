@@ -40,14 +40,24 @@ Copyright 2016 tony-osp (http://tony-osp.dreamwidth.org/)
 
 #define HW_ENABLE_MOTEINORF		1
 #define DEFAULT_STATION_ID		9	// Usually SG Gateway will be used on Master. But in any case Host should explicitly set the station ID for RF network
+#define NETWORK_MOTEINORF_DEFAULT_PANID	55
+
 
 #endif //HW_V20_GATEWAY
 
 #define MAX_REMOTE_STATIONS  9	// remote stations may have numbers from 1 to 9
 #define MAX_STATIONS		 16 // Maximum number of stations 
 
-#define EEPROM_SHEADER "SGG2"
-#define SG_FIRMWARE_VERSION	1
+#define SG_FIRMWARE_SHEADER "SGG2"
+#define SG_FIRMWARE_VERSION_MAJOR	1
+#define SG_FIRMWARE_VERSION_MINOR	0
+
+#define ADDR_SHEADER		0
+#define ADDR_VERSION_MAJOR	4
+#define ADDR_VERSION_MINOR	5
+
+#define ADDR_NODE_ID		6
+#define ADDR_PAN_ID			7
 
 #define STATIONID_BROADCAST			255		// reserved stationID for broadcasts
 
